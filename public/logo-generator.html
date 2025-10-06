@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo to PNG Converter</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .logo-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            width: 200px;
+            height: 200px;
+        }
+        
+        canvas {
+            border: 1px solid #ddd;
+            background: white;
+        }
+        
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #0056b3;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>Logo PNG Generator</h1>
+    
+    <div class="logo-container">
+        <svg class="logo" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <!-- Light blue gradient -->
+                <linearGradient id="lightBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#29B6F6;stop-opacity:1" />
+                </linearGradient>
+                
+                <!-- Medium blue gradient -->
+                <linearGradient id="mediumBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#29B6F6;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#1E88E5;stop-opacity:1" />
+                </linearGradient>
+                
+                <!-- Dark blue gradient -->
+                <linearGradient id="darkBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#1E88E5;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#1565C0;stop-opacity:1" />
+                </linearGradient>
+                
+                <!-- Red accent gradient -->
+                <linearGradient id="redAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#FF5722;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#F44336;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            
+            <!-- Outer diamond shape rotated 45 degrees -->
+            <g transform="translate(100,100) rotate(45)">
+                <!-- Top triangle (light blue) -->
+                <polygon points="-60,-60 60,-60 0,0" fill="url(#lightBlue)" />
+                
+                <!-- Right triangle (medium blue) -->
+                <polygon points="60,-60 60,60 0,0" fill="url(#mediumBlue)" />
+                
+                <!-- Bottom triangle (dark blue) -->
+                <polygon points="60,60 -60,60 0,0" fill="url(#darkBlue)" />
+                
+                <!-- Left triangle (medium blue) -->
+                <polygon points="-60,60 -60,-60 0,0" fill="url(#mediumBlue)" />
+                
+                <!-- Small red accent in top-right -->
+                <polygon points="40,-40 60,-40 60,-20 40,-20" fill="url(#redAccent)" />
+            </g>
+            
+            <!-- Inner white diamond -->
+            <g transform="translate(100,100) rotate(45)">
+                <polygon points="-25,-25 25,-25 25,25 -25,25" fill="white" opacity="0.95" />
+            </g>
+        </svg>
+    </div>
+    
+    <div class="controls">
+        <button onclick="generatePNG(200)">Download 200px PNG</button>
+        <button onclick="generatePNG(512)">Download 512px PNG</button>
+        <button onclick="generatePNG(1024)">Download 1024px PNG</button>
+    </div>
+    
+    <canvas id="canvas" style="display: none;"></canvas>
+    
+    <script>
+        function generatePNG(size) {
+            const svg = document.querySelector('.logo');
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Create image from SVG
+            const svgData = new XMLSerializer().serializeToString(svg);
+            const svgBlob = new Blob([svgData], {type: 'image/svg+xml;charset=utf-8'});
+            const svgUrl = URL.createObjectURL(svgBlob);
+            
+            const img = new Image();
+            img.onload = function() {
+                // Clear canvas with white background
+                ctx.fillStyle = 'white';
+                ctx.fillRect(0, 0, size, size);
+                
+                // Draw the SVG
+                ctx.drawImage(img, 0, 0, size, size);
+                
+                // Convert to PNG and download
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `logo-${size}px.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 'image/png');
+                
+                URL.revokeObjectURL(svgUrl);
+            };
+            
+            img.src = svgUrl;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+POST http://localhost:9506/user
+Content-Type: application/json
+
+{
+  "avatar": "http://abc.com",
+  "username": "yoh",
+  "mobile": "18688886666",
+  "password": "123456",
+  "isEnabled": true,
+  "roleCodes": ["admin"]
+}

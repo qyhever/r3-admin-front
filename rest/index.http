@@ -1,0 +1,3 @@
+GET http://localhost:9506/user
+
+GET http://localhost/r3/api/user

@@ -1,0 +1,11 @@
+@import './base.css';
+@import 'tailwindcss';
+
+:root:root {
+  --td-brand-color: #346fff;
+  --pure-black-color: 0 0 0;
+}
+
+/* @theme {
+  --pure-black: rgb(var(--pure-black-color));
+} */
