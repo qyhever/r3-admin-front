@@ -11,7 +11,6 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { viteMockServe } from 'vite-plugin-mock'
 import { metaPlugin } from './build/meta'
 
-// https://vite.dev/config/
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const isServe = command === 'serve'
@@ -65,9 +64,8 @@ export default defineConfig(({ mode, command }) => {
     build: {
       rollupOptions: {
         output: {
-          // Group JS files in js directory
-          entryFileNames: 'js/[name].js',
-          chunkFileNames: 'js/[name].js',
+          entryFileNames: 'js/[name]-[hash].js',
+          chunkFileNames: 'js/[name]-[hash].js',
           assetFileNames: (assetInfo) => {
             const extType = assetInfo.name?.split('.').pop()?.toLowerCase()
             // Group CSS files in css directory

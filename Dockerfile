@@ -17,7 +17,7 @@ RUN pnpm install
 COPY . .
 
 # 构建项目
-RUN pnpm build
+RUN pnpm run build:prod
 
 # 生产阶段
 FROM nginx:stable-alpine as production-stage
