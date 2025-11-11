@@ -40,19 +40,6 @@ jobs:
           ls -lah dist || true
           du -sh dist || true
 
-      # 远端目录准备：确保 /usr/share/nginx/html/r3-admin 存在
-      - name: Prepare remote directory
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_RSA }}
-          options: -o ServerAliveInterval=30 -o ServerAliveCountMax=6 -o TCPKeepAlive=yes
-          command_timeout: 15m
-          script: |
-            set -euxo pipefail
-            mkdir -p /usr/share/nginx/html/r3-admin
-
       # 上传构建产物到远端（去掉 strip_components，递归复制 dist/**）
       - name: Deploy to server via SSH
         uses: appleboy/scp-action@v0.1.7
@@ -62,17 +49,4 @@ jobs:
           key: ${{ secrets.SERVER_SSH_RSA }}
           source: "dist/**"
           target: "/usr/share/nginx/html/r3-admin"
-
-      # 上传后校验：列出远端 r3-admin 目录内容
-      - name: Verify remote contents
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_RSA }}
-          options: -o ServerAliveInterval=30 -o ServerAliveCountMax=6 -o TCPKeepAlive=yes
-          command_timeout: 10m
-          script: |
-            set -euxo pipefail
-            ls -lah /usr/share/nginx/html/r3-admin || true
-            find /usr/share/nginx/html/r3-admin -maxdepth 1 -type f | wc -l || true
+          strip_components: 1
