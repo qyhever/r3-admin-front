@@ -39,7 +39,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import type { TableProps, PrimaryTableCol } from 'tdesign-vue-next'
 import { cloneDeep } from 'lodash-es'
 import { usePagination } from 'alova/client'
-import { getResources, updateResource, deleteResource, batchDeleteResources } from './service'
+import { getResources, deleteResource, batchDeleteResources, toggleResourceStatus } from './service'
 import type { ResourceItem, IQueryModel } from './type'
 import { formatTime } from '@/utils/date'
 import OperationDialog from './operation-dialog.vue'
@@ -158,7 +158,6 @@ const onReset = () => {
 const onToggleEnabled = async (id: number, checked: boolean) => {
   try {
     // Handle toggle enabled/disabled
-    await updateResource({ id, isEnabled: checked })
     MessagePlugin.closeAll()
     MessagePlugin.success(`${checked ? '启用' : '禁用'}成功`)
     const newData = dataSource.value.map((item: ResourceItem) => {
@@ -171,6 +170,7 @@ const onToggleEnabled = async (id: number, checked: boolean) => {
     update({
       data: newData,
     })
+    await toggleResourceStatus(id)
   } catch (error) {
     console.log('error: ', error)
   }

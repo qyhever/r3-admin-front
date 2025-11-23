@@ -13,7 +13,7 @@ const basicRoutes = [
   {
     path: '/home',
     component: () => import('@/views/home.vue'),
-    meta: { authKey: 'home' },
+    // meta: { authKey: 'home' },
   },
   {
     path: '/resource',
@@ -156,6 +156,7 @@ const router = createRouter({
 
 function hasPagePermission(authKey?: string) {
   const userStore = useUserStore()
+  console.log('userStore: ', userStore)
   if (!authKey) {
     return true
   }

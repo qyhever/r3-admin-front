@@ -4,8 +4,8 @@
 name: Build and Deploy r3-admin via SSH
 
 on:
-  push:
-    branches: [ main, master ]
+  # push:
+  #   branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -32,7 +32,7 @@ jobs:
         run: pnpm install
 
       - name: Build project
-        run: pnpm run build:prod
+        run: npm run build:prod
 
       # 构建产物检查：打印 dist 目录内容，便于定位上传问题
       - name: Verify build outputs

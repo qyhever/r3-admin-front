@@ -35,7 +35,7 @@ import { MessagePlugin } from 'tdesign-vue-next'
 import type { TableProps, PrimaryTableCol } from 'tdesign-vue-next'
 import { cloneDeep } from 'lodash-es'
 import { usePagination } from 'alova/client'
-import { getRoles, updateRole, deleteRole, batchDeleteRoles } from './service'
+import { getRoles, toggleRoleStatus, deleteRole, batchDeleteRoles } from './service'
 import type { RoleItem, IQueryModel } from './type'
 import { formatTime } from '@/utils/date'
 import SearchForm from './components/search-form.vue'
@@ -144,7 +144,6 @@ const onReset = () => {
 const onToggleEnabled = async (row: RoleItem, checked: boolean) => {
   // Handle toggle enabled/disabled
   const id = row.id
-  await updateRole({ id, isEnabled: checked })
   MessagePlugin.closeAll()
   MessagePlugin.success(`${checked ? '启用' : '禁用'}成功`)
   const newData = dataSource.value.map((item: RoleItem) => {
@@ -157,6 +156,7 @@ const onToggleEnabled = async (row: RoleItem, checked: boolean) => {
   update({
     data: newData,
   })
+  await toggleRoleStatus(id)
 }
 
 const onSelectChange = (keys: number[]) => {

@@ -67,6 +67,9 @@ function getAccessMenus(menus: IMenuItem[], resourceCodes: string[]) {
     if (Array.isArray(item.children)) {
       item.children = getAccessMenus(item.children, resourceCodes)
     }
+    if (!item.authKey) {
+      return true
+    }
     return resourceCodes.some((code) => code === item.authKey)
   })
 }

@@ -14,3 +14,4 @@ export const updateResource = (data: UpdateResourceDto) => alova.Put('/resource'
 export const deleteResource = (id: number) => alova.Delete(`/resource/${id}`)
 export const batchDeleteResources = (ids: number[]) => alova.Post('/resource/batchDelete', ids)
 export const getAllResources = () => alova.Get<ResourceItem[]>('/resource/findAll')
+export const toggleResourceStatus = (id: number) => alova.Patch(`/resource/toggleStatus/${id}`)

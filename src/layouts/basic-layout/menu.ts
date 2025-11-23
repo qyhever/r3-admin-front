@@ -11,7 +11,7 @@ export const menuList: IMenuItem[] = [
     title: '首页',
     path: '/home',
     icon: 'smile',
-    authKey: 'home',
+    // authKey: 'home',
   },
   {
     title: '权限管理',
