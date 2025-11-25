@@ -1,52 +1,47 @@
 # .github/workflows/trigger-deploy.yml
-# 构建 r3-admin 并通过 SSH 部署
+# 构建 r3-admin-front 并通过 SSH 部署
 
-name: Build and Deploy r3-admin via SSH
+name: Build and Deploy r3-admin-front via SSH
 
 on:
-  # push:
-  #   branches: [ main, master ]
+  push:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+    - name: Checkout deployment configuration
+      uses: actions/checkout@v4
 
-      - name: Display Public Key for Debugging
-        run: |
-          echo "Verifying the public key that will be used for authentication..."
-          ssh-keygen -y -f <(echo "${{ secrets.SERVER_SSH_RSA }}")
+    - name: Setup SSH
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.SERVER_SSH_RSA }}
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18' # 或者您需要的 Node.js 版本
+    - name: Display Public Key for Debugging
+      run: |
+        echo "Verifying the public key that will be used for authentication..."
+        ssh-keygen -y -f <(echo "${{ secrets.SERVER_SSH_RSA }}")
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+    - name: Add server to known hosts
+      run: ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Install dependencies
-        run: pnpm install
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18' # 或者您需要的 Node.js 版本
 
-      - name: Build project
-        run: npm run build:prod
+    - name: Install pnpm
+      run: npm install -g pnpm
 
-      # 构建产物检查：打印 dist 目录内容，便于定位上传问题
-      - name: Verify build outputs
-        run: |
-          ls -lah dist || true
-          du -sh dist || true
+    - name: Install dependencies
+      run: pnpm install
 
-      # 上传构建产物到远端（去掉 strip_components，递归复制 dist/**）
-      - name: Deploy to server via SSH
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_RSA }}
-          source: "dist/**"
-          target: "/usr/share/nginx/html/r3-admin"
-          strip_components: 1
+    - name: Build project
+      run: npm run build:prod
+
+    - name: Copy deployment files to server
+      run: |
+        rsync -avz --delete dist/ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:/usr/share/nginx/html/r3-admin/
