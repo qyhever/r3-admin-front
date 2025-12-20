@@ -9,14 +9,23 @@ import tailwindcss from '@tailwindcss/vite'
 import checker from 'vite-plugin-checker'
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import { viteMockServe } from 'vite-plugin-mock'
-import { metaPlugin } from './build/meta'
+import metaPlugin, { getBuildHash } from './build/meta'
+import dayjs from 'dayjs'
 
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const isServe = command === 'serve'
   console.log('env.VITE_APP_MODE_ENV: ', env.VITE_APP_MODE_ENV)
   console.log('isServe: ', isServe)
+  const version = getBuildHash()
+  const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
   return {
+    define: {
+      // https://github.com/vitejs/vite/issues/2605#issuecomment-803276660
+      // __LAST_BUILD_TIME__: env.VITE_APP_BUILD_ENV !== 'prod' ? JSON.stringify(now) : '""',
+      LOCAL_BUILD_HASH: JSON.stringify(version),
+      LOCAL_BUILD_TIME: JSON.stringify(now),
+    },
     base: '/r3-admin/',
     server: {
       // host: '0.0.0.0',
