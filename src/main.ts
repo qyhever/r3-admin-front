@@ -12,7 +12,7 @@ import App from './App.vue'
 import router from './router'
 import ComSvgIcon from './components/com-svg-icon.vue'
 import ComBack from './components/back.vue'
-
+console.log('import.meta.env', import.meta.env)
 const app = createApp(App)
 
 app.use(createPinia())

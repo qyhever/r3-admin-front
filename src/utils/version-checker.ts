@@ -35,6 +35,7 @@ export class VersionChecker {
       buildHash: LOCAL_BUILD_HASH,
       buildTime: LOCAL_BUILD_TIME,
     }
+    console.log('this.metaInfo: ', this.metaInfo)
     // 定期检查版本
     this.runLoopTask()
     window.addEventListener('visibilitychange', () => {
@@ -72,7 +73,9 @@ export class VersionChecker {
 
   private async fetchMetaInfo() {
     try {
-      const response = await fetch('/meta.json?t=' + Date.now(), {
+      const baseURL = import.meta.env.BASE_URL
+      const url = `${baseURL}meta.json?t=${Date.now()}`
+      const response = await fetch(url, {
         cache: 'no-cache',
       })
 
@@ -112,27 +115,6 @@ export class VersionChecker {
       return versionInfo
     } catch (error) {
       console.log('版本检查出错:', error)
-    }
-  }
-
-  /**
-   * 手动检查版本
-   */
-  async checkNow(): Promise<boolean> {
-    try {
-      const response = await fetch('/meta.json?t=' + Date.now(), {
-        cache: 'no-cache',
-      })
-
-      if (!response.ok) {
-        return false
-      }
-
-      const versionInfo: MetaInfo = await response.json()
-      return versionInfo.buildHash !== this.metaInfo.buildHash
-    } catch (error) {
-      console.warn('版本检查出错:', error)
-      return false
     }
   }
 

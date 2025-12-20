@@ -17,14 +17,12 @@ export default defineConfig(({ mode, command }) => {
   const isServe = command === 'serve'
   console.log('env.VITE_APP_MODE_ENV: ', env.VITE_APP_MODE_ENV)
   console.log('isServe: ', isServe)
-  const version = getBuildHash()
   const now = dayjs().format('YYYY-MM-DD HH:mm:ss')
   return {
     define: {
       // https://github.com/vitejs/vite/issues/2605#issuecomment-803276660
-      // __LAST_BUILD_TIME__: env.VITE_APP_BUILD_ENV !== 'prod' ? JSON.stringify(now) : '""',
-      LOCAL_BUILD_HASH: JSON.stringify(version),
-      LOCAL_BUILD_TIME: JSON.stringify(now),
+      LOCAL_BUILD_HASH: env.VITE_APP_MODE_ENV !== 'dev' ? JSON.stringify(getBuildHash()) : '""',
+      LOCAL_BUILD_TIME: env.VITE_APP_MODE_ENV !== 'dev' ? JSON.stringify(now) : '""',
     },
     base: '/r3-admin/',
     server: {
