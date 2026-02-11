@@ -10,3 +10,9 @@ interface ImportMeta {
 
 declare const LOCAL_BUILD_HASH: string
 declare const LOCAL_BUILD_TIME: string
+
+interface Window {
+  CanvasNest?: {
+    destroy: () => void
+  }
+}

@@ -12,6 +12,25 @@ interface RequestError extends Error {
 }
 
 const baseURL = '/r3/api'
+
+// Token 刷新状态管理
+let refreshPromise: Promise<string> | null = null
+
+/**
+ * 获取或创建刷新 token 的 Promise
+ * 确保多个并发请求只触发一次 token 刷新
+ */
+function getRefreshTokenPromise(): Promise<string> {
+  if (!refreshPromise) {
+    const userStore = useUserStore()
+    refreshPromise = userStore.refreshAccessToken().finally(() => {
+      refreshPromise = null
+    })
+  }
+  return refreshPromise
+}
+
+// https://github.com/alovajs/alova
 const alovaInstance = createAlova({
   baseURL,
   requestAdapter: adapterFetch(),
@@ -21,8 +40,8 @@ const alovaInstance = createAlova({
   },
   beforeRequest(method) {
     const userStore = useUserStore()
-    if (userStore.token) {
-      method.config.headers.Authorization = `Bearer ${userStore.token}`
+    if (userStore.accessToken) {
+      method.config.headers.Authorization = `Bearer ${userStore.accessToken}`
     }
 
     const originalParams =
@@ -49,14 +68,34 @@ const alovaInstance = createAlova({
         return res.data
       }
 
-      // 处理401未授权
+      // 401 错误：尝试刷新 token 并重试
       if (response.status === 401) {
         const userStore = useUserStore()
-        MessagePlugin.closeAll()
-        MessagePlugin.error('登录状态已失效，请重新登录')
-        userStore.logout()
-        router.replace('/login')
-        return Promise.reject(new Error('Unauthorized'))
+        // 判断是否是刷新 token 接口本身失败
+        if (methodInstance.url.includes('/auth/refreshToken')) {
+          MessagePlugin.closeAll()
+          MessagePlugin.error('登录状态已失效，请重新登录')
+          userStore.logout()
+          router.replace('/login')
+          return Promise.reject(new Error('Refresh token failed'))
+        }
+
+        try {
+          // 等待 token 刷新完成（如果正在刷新，会复用同一个 Promise）
+          await getRefreshTokenPromise()
+
+          // Token 刷新成功，重试原请求
+          console.log('Token refreshed, retrying request:', methodInstance.url)
+          return methodInstance.send()
+        } catch (refreshError) {
+          // Token 刷新失败，跳转登录
+          console.error('Token refresh failed:', refreshError)
+          MessagePlugin.closeAll()
+          MessagePlugin.error('登录状态已失效，请重新登录')
+          userStore.logout()
+          router.replace('/login')
+          return Promise.reject(refreshError)
+        }
       }
 
       const msg = isDev()

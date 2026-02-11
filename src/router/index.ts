@@ -166,7 +166,7 @@ function hasPagePermission(authKey?: string) {
 // 路由守卫
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore()
-  if (userStore.token) {
+  if (userStore.accessToken) {
     await userStore.fetchUserInfo()
     if (to.path === '/login') {
       // 已登录用户访问登录页，跳转到首页

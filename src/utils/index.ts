@@ -66,3 +66,30 @@ export function makeTree<T extends TreeNode>(
 // ]
 // console.log(makeTree(arr, 'code', 'parentCode'))
 // console.log(arr)
+
+export function loadScript(url: string) {
+  // 检查脚本是否已经加载
+  const node = document.head.querySelector(`script[src="${url}"]`)
+  if (node) {
+    console.log(`脚本(${url})已加载`)
+    return Promise.resolve(node)
+  }
+  return new Promise((resolve, reject) => {
+    const script = document.createElement('script')
+    script.type = 'text/javascript'
+    script.onload = () => {
+      console.log(`脚本(${url})加载完成`)
+      resolve(script)
+    }
+    script.onerror = reject
+    script.src = url
+    document.head.appendChild(script)
+  })
+}
+
+export function removeScript(url: string) {
+  const node = document.head.querySelector(`script[src="${url}"]`)
+  if (node) {
+    document.head.removeChild(node)
+  }
+}

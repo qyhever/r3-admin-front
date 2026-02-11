@@ -31,7 +31,7 @@ export default defineConfigWithVueTs(
     },
   },
 
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
+  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**', '**/public/**']),
 
   pluginVue.configs['flat/recommended'],
   vueTsConfigs.recommended,

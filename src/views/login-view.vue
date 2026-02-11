@@ -53,12 +53,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { MessagePlugin, type FormRule } from 'tdesign-vue-next'
 import { useUserStore } from '@/stores/user'
 import type { FormProps } from 'tdesign-vue-next'
+import { loadScript, removeScript } from '@/utils'
 
+const canvasURL = import.meta.env.BASE_URL + 'assets/js/canvas-nest.js'
 const router = useRouter()
 const userStore = useUserStore()
 const formRef = ref()
@@ -110,12 +112,25 @@ const handleSubmit: FormProps['onSubmit'] = async ({ validateResult }) => {
 //   formData.password = ''
 //   formRef.value?.clearValidate()
 // }
+
+onMounted(() => {
+  loadScript(canvasURL)
+})
+
+onBeforeUnmount(() => {
+  removeScript(canvasURL)
+  // 销毁 canvas-nest 实例
+  if (window.CanvasNest) {
+    window.CanvasNest.destroy()
+    window.CanvasNest = undefined
+  }
+})
 </script>
 
 <style scoped>
 .login-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f0f2f5;
   display: flex;
   align-items: center;
   justify-content: center;

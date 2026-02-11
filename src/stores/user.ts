@@ -1,14 +1,16 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { loginByMobileApi, getUserInfo } from '@/api/global'
+import { loginByMobileApi, getUserInfo, refreshTokenApi } from '@/api/global'
 import type { UserInfo } from '@/types/user'
 import router from '@/router'
 
-const LOCAL_TOKEN_KEY = 'r3-token'
+const LOCAL_ACCESS_TOKEN_KEY = 'r3-access-token'
+const LOCAL_REFRESH_TOKEN_KEY = 'r3-refresh-token'
 // const LOCAL_USER_INFO_KEY = 'r3-user-info'
 
 export const useUserStore = defineStore('user', () => {
-  const token = ref<string | null>(localStorage.getItem(LOCAL_TOKEN_KEY))
+  const accessToken = ref<string | null>(localStorage.getItem(LOCAL_ACCESS_TOKEN_KEY))
+  const refreshToken = ref<string | null>(localStorage.getItem(LOCAL_REFRESH_TOKEN_KEY))
   // const userInfo = ref<UserInfo | null>(
   //   localStorage.getItem(LOCAL_USER_INFO_KEY)
   //     ? JSON.parse(localStorage.getItem(LOCAL_USER_INFO_KEY)!)
@@ -17,12 +19,38 @@ export const useUserStore = defineStore('user', () => {
   const userInfo = ref<UserInfo | null>(null)
 
   // 计算属性：是否已登录
-  const isLoggedIn = computed(() => !!token.value)
+  const isLoggedIn = computed(() => !!accessToken.value)
 
   const loginByMobile = async (mobile: string, password: string) => {
-    const val = await loginByMobileApi({ mobile, password })
-    token.value = val
-    localStorage.setItem(LOCAL_TOKEN_KEY, val)
+    const res = await loginByMobileApi({ mobile, password })
+    accessToken.value = res.accessToken
+    refreshToken.value = res.refreshToken
+    localStorage.setItem(LOCAL_ACCESS_TOKEN_KEY, res.accessToken)
+    localStorage.setItem(LOCAL_REFRESH_TOKEN_KEY, res.refreshToken)
+  }
+
+  const refreshAccessToken = async () => {
+    try {
+      const rToken = refreshToken.value
+      if (!rToken) {
+        throw new Error('No refresh token available')
+      }
+
+      const res = await refreshTokenApi({
+        refreshToken: rToken,
+      })
+
+      accessToken.value = res.accessToken
+      refreshToken.value = res.refreshToken
+      localStorage.setItem(LOCAL_ACCESS_TOKEN_KEY, res.accessToken)
+      localStorage.setItem(LOCAL_REFRESH_TOKEN_KEY, res.refreshToken)
+      return accessToken.value
+    } catch (error) {
+      console.error('Refresh token failed:', error)
+      // 刷新失败
+      logout()
+      throw error
+    }
   }
 
   const fetchUserInfo = async () => {
@@ -46,9 +74,11 @@ export const useUserStore = defineStore('user', () => {
 
   // 清除登录信息
   const clearUser = () => {
-    token.value = null
+    accessToken.value = null
+    refreshToken.value = null
     userInfo.value = null
-    localStorage.removeItem(LOCAL_TOKEN_KEY)
+    localStorage.removeItem(LOCAL_ACCESS_TOKEN_KEY)
+    localStorage.removeItem(LOCAL_REFRESH_TOKEN_KEY)
     // localStorage.removeItem(LOCAL_USER_INFO_KEY)
   }
 
@@ -58,12 +88,14 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
-    token,
+    accessToken,
+    refreshToken,
     userInfo,
     isLoggedIn,
     clearUser,
     logout,
     loginByMobile,
     fetchUserInfo,
+    refreshAccessToken,
   }
 })
