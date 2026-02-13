@@ -2,7 +2,7 @@ import { createHash } from 'crypto'
 import fsExtra from 'fs-extra'
 import fg from 'fast-glob'
 import dayjs from 'dayjs'
-import { Plugin } from 'vite'
+import { Plugin, ResolvedConfig } from 'vite'
 import path from 'path'
 
 const { readFileSync, writeFileSync } = fsExtra
@@ -50,7 +50,7 @@ export default function mataPlugin(distFilePath: string = 'dist/meta.json') {
   return {
     name: 'generate-meta-file',
     apply,
-    configResolved(resolvedConfig) {
+    configResolved(resolvedConfig: ResolvedConfig) {
       projectRoot = resolvedConfig.root
       resolvedOutDir = resolvedConfig.build?.outDir || 'dist'
     },

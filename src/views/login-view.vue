@@ -60,7 +60,7 @@ import { useUserStore } from '@/stores/user'
 import type { FormProps } from 'tdesign-vue-next'
 import { loadScript, removeScript } from '@/utils'
 
-const canvasURL = import.meta.env.BASE_URL + 'assets/js/canvas-nest.js'
+const canvasURL = import.meta.env.BASE_URL + 'assets/js/canvas-nest.js?v=' + LOCAL_BUILD_HASH
 const router = useRouter()
 const userStore = useUserStore()
 const formRef = ref()
