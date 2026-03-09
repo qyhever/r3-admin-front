@@ -204,7 +204,7 @@ const handleLogout = () => {
   color: #333;
 }
 .header-placeholder {
-  height: 60px;
+  height: 110px;
   background-color: transparent;
 }
 </style>

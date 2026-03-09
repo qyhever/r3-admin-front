@@ -276,8 +276,12 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .tab-nav-con {
-  position: relative;
+  z-index: 100;
+  position: fixed;
+  inset-block-start: 60px;
+  width: 100%;
   height: 50px;
+  background-color: #fff;
 }
 .tab-nav-outter {
   position: absolute;
