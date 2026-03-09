@@ -48,7 +48,6 @@ import { useRoute } from 'vue-router'
 import { useRequest } from 'alova/client'
 import { ChevronLeft } from 'lucide-vue-next'
 import { getUser } from './service'
-import { makeTree } from '@/utils'
 
 defineOptions({
   name: 'ViewRole',
@@ -64,17 +63,6 @@ const { data: detailInfo } = useRequest(
 )
 
 const route = useRoute()
-
-const resourceTreeData = computed(() => {
-  const resourceList = (detailInfo.value.resources || []).map((item) => {
-    return {
-      ...item,
-      label: item.name,
-      value: item.code,
-    }
-  })
-  return makeTree(resourceList, 'code', 'parentCode')
-})
 
 const id = computed(() => {
   return Number(route.query.id)

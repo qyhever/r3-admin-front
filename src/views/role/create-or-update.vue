@@ -5,12 +5,12 @@
         <router-link to="/role" replace class="flex">
           <t-link hover="color" theme="primary">
             <div className="flex items-center">
-                <ChevronLeft className="w-4 h-4" />
-                返回
-              </div>
+              <ChevronLeft className="w-4 h-4" />
+              返回
+            </div>
           </t-link>
         </router-link>
-        <h3 className="text-base font-bold">{{pageTitle}}</h3>
+        <h3 className="text-base font-bold">{{ pageTitle }}</h3>
       </div>
       <t-form ref="formRef" :data="formModel" :rules="rules" label-width="100px" @submit="onSubmit">
         <t-form-item label="编码" name="code">
