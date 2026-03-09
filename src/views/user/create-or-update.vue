@@ -4,13 +4,13 @@
       <div class="flex items-center gap-4">
         <router-link to="/user" replace class="flex">
           <t-link hover="color" theme="primary">
-            <div className="flex items-center">
+            <div class="flex items-center">
               <ChevronLeft class-name="w-4 h-4" />
               返回
             </div>
           </t-link>
         </router-link>
-        <h3 className="text-base font-bold">{{ pageTitle }}</h3>
+        <h3 class="text-base font-bold">{{ pageTitle }}</h3>
       </div>
       <t-form ref="formRef" :data="formModel" :rules="rules" label-width="100px" @submit="onSubmit">
         <t-form-item label="名称" name="username">

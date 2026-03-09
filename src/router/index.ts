@@ -96,37 +96,37 @@ const basicRoutes = [
   {
     path: '/block/clipboard',
     component: () => import('@/views/block/clipboard.vue'),
-    meta: { authKey: 'clipboard' },
+    meta: { authKey: 'clipboard', title: '复制' },
   },
   {
     path: '/block/qrcode',
     component: () => import('@/views/block/qrcode.vue'),
-    meta: { authKey: 'qrcode' },
+    meta: { authKey: 'qrcode', title: '二维码' },
   },
   {
     path: '/chart/married',
     component: () => import('@/views/chart/married.vue'),
-    meta: { authKey: 'married' },
+    meta: { authKey: 'married', title: '已婚统计' },
   },
   {
     path: '/chart/birth',
     component: () => import('@/views/chart/birth.vue'),
-    meta: { authKey: 'birth' },
+    meta: { authKey: 'birth', title: '出生统计' },
   },
   {
     path: '/chart/college-entry-exam',
     component: () => import('@/views/chart/college-entry-exam.vue'),
-    meta: { authKey: 'college_entrance_examination' },
+    meta: { authKey: 'college_entrance_examination', title: '高考统计' },
   },
   {
     path: '/chart/university-graduate',
     component: () => import('@/views/chart/university-graduate.vue'),
-    meta: { authKey: 'university_graduate' },
+    meta: { authKey: 'university_graduate', title: '大学毕业统计' },
   },
   {
     path: '/chart/postgraduate',
     component: () => import('@/views/chart/postgraduate.vue'),
-    meta: { authKey: 'postgraduate' },
+    meta: { authKey: 'postgraduate', title: '研究生统计' },
   },
   {
     path: '/about',
