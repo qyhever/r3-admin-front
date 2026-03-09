@@ -45,14 +45,22 @@
           </div>
         </div>
       </div>
-      <router-view />
+      <NavTab></NavTab>
+      <router-view v-slot="{ Component }">
+        <keep-alive>
+          <component
+            :is="Component"
+            :key="route.query.id ? route.path + route.query.id : route.path"
+          />
+        </keep-alive>
+      </router-view>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { difference, remove, union } from 'lodash-es'
 import { MessagePlugin } from 'tdesign-vue-next'
 import type { MenuValue } from 'tdesign-vue-next'
@@ -61,6 +69,7 @@ import { menuList } from './menu'
 import { useUserStore } from '@/stores/user'
 import { getActive } from '@/router'
 import type { IMenuItem } from './menu'
+import NavTab from './nav-tab.vue'
 
 function getAccessMenus(menus: IMenuItem[], resourceCodes: string[]) {
   return menus.filter((item) => {
@@ -74,6 +83,7 @@ function getAccessMenus(menus: IMenuItem[], resourceCodes: string[]) {
   })
 }
 
+const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const collapsed = ref(false)

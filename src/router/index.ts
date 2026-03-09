@@ -13,17 +13,23 @@ const basicRoutes = [
   {
     path: '/home',
     component: () => import('@/views/home.vue'),
-    // meta: { authKey: 'home' },
+    meta: {
+      // authKey: 'home',
+      title: '首页',
+    },
   },
   {
     path: '/resource',
     component: () => import('@/views/resource/index.vue'),
-    meta: { authKey: 'resource' },
+    meta: {
+      authKey: 'resource',
+      title: '资源管理',
+    },
   },
   {
     path: '/role',
     component: () => import('@/views/role/index.vue'),
-    meta: { authKey: 'role' },
+    meta: { authKey: 'role', title: '角色管理' },
   },
   {
     path: '/role/create',
@@ -31,6 +37,7 @@ const basicRoutes = [
     meta: {
       authKey: 'role',
       activeMenu: '/role',
+      title: '新增角色',
     },
   },
   {
@@ -39,6 +46,7 @@ const basicRoutes = [
     meta: {
       authKey: 'role',
       activeMenu: '/role',
+      title: '编辑角色',
     },
   },
   {
@@ -47,6 +55,7 @@ const basicRoutes = [
     meta: {
       authKey: 'role',
       activeMenu: '/role',
+      title: '查看角色',
     },
   },
   {
@@ -54,6 +63,7 @@ const basicRoutes = [
     component: () => import('@/views/user/index.vue'),
     meta: {
       authKey: 'user',
+      title: '用户管理',
     },
   },
   {
@@ -62,6 +72,7 @@ const basicRoutes = [
     meta: {
       authKey: 'user',
       activeMenu: '/user',
+      title: '新增用户',
     },
   },
   {
@@ -70,6 +81,7 @@ const basicRoutes = [
     meta: {
       authKey: 'user',
       activeMenu: '/user',
+      title: '编辑用户',
     },
   },
   {
@@ -78,6 +90,7 @@ const basicRoutes = [
     meta: {
       authKey: 'user',
       activeMenu: '/user',
+      title: '查看用户',
     },
   },
   {
@@ -156,7 +169,6 @@ const router = createRouter({
 
 function hasPagePermission(authKey?: string) {
   const userStore = useUserStore()
-  console.log('userStore: ', userStore)
   if (!authKey) {
     return true
   }

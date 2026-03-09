@@ -25,11 +25,11 @@
       </template>
       <template #operation="{ row }">
         <div class="flex gap-2">
-          <router-link :to="{ path: '/user/update', query: { id: row.id } }">
+          <router-link :to="{ path: '/user/update', query: { id: row.id, label: row.username } }">
             <t-link hover="color" theme="primary">编辑</t-link>
           </router-link>
           <t-link hover="color" theme="danger" @click="emit('delete-row', row)">删除</t-link>
-          <router-link :to="{ path: '/user/view', query: { id: row.id } }">
+          <router-link :to="{ path: '/user/view', query: { id: row.id, label: row.username } }">
             <t-link hover="color" theme="primary">查看</t-link>
           </router-link>
         </div>

@@ -4,7 +4,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import VersionUpdateNotification from '@/components/version-update-notification.vue'
 import { versionChecker } from '@/utils/version-checker'
 
@@ -20,7 +20,7 @@ onMounted(() => {
   }
 })
 
-onUnmounted(() => {
+onBeforeUnmount(() => {
   // 停止版本检测
   versionChecker.stop()
 })

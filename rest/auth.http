@@ -1,0 +1,16 @@
+@hostname = qyhever.com
+@port = 443
+@host = {{hostname}}:{{port}}
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6OSwiaWF0IjoxNzcxMDQ3NDA2LCJleHAiOjE3NzEwNTQ2MDYsImlzcyI6InIzLWFkbWluIn0.6WUB-CrisHzmlYGRfUM__ffknP3n51y7K_dQreLfKHE
+
+### meta
+GET https://{{host}}/r3/api/meta
+
+### 登录
+POST https://{{host}}/r3/api/auth/login
+Content-Type: application/json
+
+{
+  "mobile": "18688886666",
+  "password": "123456"
+}

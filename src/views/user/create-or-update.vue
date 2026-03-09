@@ -1,8 +1,17 @@
 <template>
   <div class="p-[20px]">
     <div class="p-[20px] bg-white rounded-[4px] space-y-4">
-      <ComBack />
-      <div class="text-xl">{{ pageTitle }}</div>
+      <div class="flex items-center gap-4">
+        <router-link to="/user" replace class="flex">
+          <t-link hover="color" theme="primary">
+            <div className="flex items-center">
+              <ChevronLeft class-name="w-4 h-4" />
+              返回
+            </div>
+          </t-link>
+        </router-link>
+        <h3 className="text-base font-bold">{{ pageTitle }}</h3>
+      </div>
       <t-form ref="formRef" :data="formModel" :rules="rules" label-width="100px" @submit="onSubmit">
         <t-form-item label="名称" name="username">
           <t-input v-model="formModel.username" placeholder="请输入名称" clearable />
@@ -15,7 +24,7 @@
           name="password"
           :rules="[
             {
-              required: pageType === 'create',
+              required: isCreate,
               message: '请输入密码',
             },
           ]"
@@ -60,6 +69,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { cloneDeep } from 'lodash-es'
 import type { FormProps, FormInstanceFunctions } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
+import { ChevronLeft } from 'lucide-vue-next'
 import { useRequest } from 'alova/client'
 import type { CreateUserDto } from './type'
 import { createUser, updateUser, getUser } from './service'
@@ -69,11 +79,11 @@ defineOptions({
   name: 'CuUser',
 })
 
-interface IProps {
-  pageType?: 'create' | 'update'
-}
+// interface IProps {
+//   pageType?: 'create' | 'update'
+// }
 
-const { pageType = 'create' } = defineProps<IProps>()
+// const { pageType = 'create' } = defineProps<IProps>()
 
 const defaultFormModel: CreateUserDto = {
   avatar: '',
@@ -136,7 +146,7 @@ const rules = ref({
 })
 const formRef = ref<FormInstanceFunctions>()
 
-const isCreate = computed(() => pageType === 'create')
+const isCreate = computed(() => location.pathname.includes('create'))
 
 const id = computed(() => {
   return Number(route.query.id)

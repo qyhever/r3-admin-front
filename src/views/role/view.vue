@@ -1,8 +1,17 @@
 <template>
   <div class="p-[20px]">
     <div class="p-[20px] bg-white rounded-[4px] space-y-4">
-      <ComBack />
-      <div class="text-xl">查看角色</div>
+      <div class="flex items-center gap-4">
+        <router-link to="/role" replace class="flex">
+          <t-link hover="color" theme="primary">
+            <div className="flex items-center">
+                <ChevronLeft className="w-4 h-4" />
+                返回
+              </div>
+          </t-link>
+        </router-link>
+        <h3 className="text-base font-bold">查看角色</h3>
+      </div>
       <div class="grid grid-cols-1 gap-4">
         <div class="flex items-center">
           <div class="pr-4 text-[#000]/50 fs-14">编码</div>
@@ -42,6 +51,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { ChevronLeft } from 'lucide-vue-next'
 import { useRequest } from 'alova/client'
 import { getRole } from './service'
 import { makeTree } from '@/utils'

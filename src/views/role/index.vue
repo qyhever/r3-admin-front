@@ -83,7 +83,6 @@ const {
   },
 )
 
-console.log('dataSource: ', dataSource)
 const selectedRowKeys = ref<number[]>([])
 
 // const data: TableProps['data'] = []
